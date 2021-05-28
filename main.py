@@ -49,7 +49,7 @@ def combin_files_in_one_file_sheets():
 
     for i in os.listdir(r'.')[:-1]:
 
-        if 'py' in i or 'exe' in i or '客户' in i:
+        if 'py' in i or 'exe' in i or '客户' in i or '操作' in i:
             continue
         name = i.split('.')[0]
         print('现在准备合并： ', i)

@@ -57,7 +57,7 @@ def combin_files_in_one_file_sheets():
         df.to_excel(writer, sheet_name=name, index=False)
         writer.save()
 
-def deal_huanqiu():
+def deal_huanqiu(who):
     print('正在处理环球数据，loading#################')
     df = pd.read_excel('客户结果数据明细表-环球.xlsx')
     # 删除不需要的列
@@ -68,12 +68,12 @@ def deal_huanqiu():
     # 处理时间
     deal_date(df)
     # 选择组别,筛选二部一组
-    df = df[df['服务组别'] == '二部一组']
+    df = df[df['服务组别'] == who]
     df.to_excel('new_环球.xlsx', index=None)
     print('环球处理完成 :) ')
     return df
 
-def deal_shengbao():
+def deal_shengbao(who):
     print('正在处理盛宝数据，loading#################')
     df2 = pd.read_excel('客户结果数据明细表-盛宝.xlsx')
     # 删除不需要的列
@@ -85,30 +85,31 @@ def deal_shengbao():
     # 处理时间
     deal_date(df2)
     # 选择组别,筛选二部一组
-    df2 = df2[df2['服务组别'] == '二部一组']
+    df2 = df2[df2['服务组别'] == who]
     df2.to_excel('new_盛宝.xlsx', index=None)
     print('盛宝处理完成 :) ')
     return df2
 
-def deal_xindan():
+def deal_xindan(who):
     print('正在处理新单操作明细，loading:#################')
     df3 = pd.read_excel('新单操作明细.xlsx')
     df3.dropna(axis=1, how='all', inplace=True)
     df3.drop(['佣金收入'], axis=1, inplace=True)
     deal_date(df3)
     # 选择组别,筛选二部一组
-    df3 = df3[df3['服务组别'] == '二部一组']
+    df3 = df3[df3['服务组别'] == who]
     df3.to_excel('new_新单.xlsx', index=None)
     print('新单处理完成 :) ')
     return df3
 
-def deal_qihuo():
+def deal_qihuo(who):
     print('正在处理期货操作，loading:#################')
     df = pd.read_excel('期货持仓客户明细.xlsx')
     df.dropna(axis=1, how='all', inplace=True)
     df.drop(['交易账号'], axis=1, inplace=True)
     deal_date(df)
-    df = df[df['服务组别'] == '二部一组']
+    df = df[df['服务组别'] == who]
+    print(who)
     df.to_excel('new_期货.xlsx', index=None)
     print('期货处理完成 :) ')
 
@@ -120,14 +121,18 @@ def combin_three_files_in_one_excel(df1, df2, df3):
     names = list(df1['服务人员'].drop_duplicates())
 
 if __name__ == '__main__':
+    path_dir = input('请输入处理文件夹地址： ')
+    os.chdir(path_dir)
+    zubie = input('请选择：\n二部一组： 1\n二部二组： 2 \n')
+    who = '二部一组' if zubie=='1' else '二部二组'
+    print(who)
     if os.path.exists('客户结果数据明细表-环球.xlsx'):
-        deal_huanqiu()
+        deal_huanqiu(who)
     if os.path.exists('客户结果数据明细表-盛宝.xlsx'):
-        deal_shengbao()
+        deal_shengbao(who)
     if os.path.exists('新单操作明细.xlsx'):
-        deal_xindan()
+        deal_xindan(who)
     if os.path.exists('期货持仓客户明细.xlsx'):
-        deal_qihuo()
+        deal_qihuo(who)
 
     combin_files_in_one_file_sheets()
-

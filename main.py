@@ -169,4 +169,5 @@ if __name__ == '__main__':
         # print(files[int(file)-1])
 
     print('Enjoy it!')
-    input()
+    input('按任意键退出 :) ')
+

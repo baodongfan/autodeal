@@ -3,14 +3,6 @@ import pandas as pd
 import os
 
 
-def clear_NA_cols(df):
-    """删除空列"""
-    # for i in df.columns:
-        # if df[i].count() == 0:
-        #     print(i)
-        #     df.drop(labels=i, axis=1, inplace=True)
-    print('done')
-
 def divide_by_name_to_sheets(df, file_name):
     """
     按照姓名把1个sheet分成独立的sheet

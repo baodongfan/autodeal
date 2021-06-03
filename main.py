@@ -13,18 +13,23 @@ def clear_NA_cols(df):
 
 def divide_by_name_to_sheets(df, file_name):
     """
-    按照姓名把sheet分成独立的sheet
+    按照姓名把1个sheet分成独立的sheet
     """
+    #把姓名后面的数字去掉，Series正则表达式表达方式
+    df['服务人员'] = df['服务人员'].str.extract('([\u4e00-\u9fa5]*)')
     names = list(df['服务人员'].drop_duplicates())
-    with pd.ExcelWriter('{0}_new.xlsx'.format(file_name)) as excel_writer:
+    with pd.ExcelWriter('{0}.xlsx'.format(file_name)) as excel_writer:
         # 循环每一类写入
         for name in names:
             bool_df = df['服务人员'] == name
             my_df = df[bool_df]
-            my_df.to_excel(excel_writer, sheet_name=name, index=True)
+            my_df.to_excel(excel_writer, sheet_name=name, index=False)
+        excel_writer.save()
 
 def divide_by_name_to_excel(df):
     """按照姓名把Excel分成独立的Excel"""
+    # 把姓名后面的数字去掉，Series正则表达式表达方式
+    df['服务人员'] = df['服务人员'].str.extract('([\u4e00-\u9fa5]*)')
     names = list(df['服务人员'].drop_duplicates())
     for name in names:
         res = df['服务人员'] == name
@@ -54,12 +59,15 @@ def combin_files_in_one_file_sheets():
         name = i.split('.')[0]
         print('现在准备合并： ', i)
         df = pd.read_excel(i)
+        deal_date(df)
         df.to_excel(writer, sheet_name=name, index=False)
         writer.save()
 
 def deal_huanqiu(who):
     print('正在处理环球数据，loading#################')
     df = pd.read_excel('客户结果数据明细表-环球.xlsx')
+    # 把姓名后面的数字去掉，Series正则表达式表达方式
+    df['服务人员'] = df['服务人员'].str.extract('([\u4e00-\u9fa5]*)')
     # 删除不需要的列
     df.drop(['国际户激活日期', '国际户激活金额', '盛宝户激活日期', '盛宝户激活金额', '当日佣转',
              '本月佣转', '当日收入', '当月收入', '累计佣金'], axis=1, inplace=True)
@@ -76,6 +84,8 @@ def deal_huanqiu(who):
 def deal_shengbao(who):
     print('正在处理盛宝数据，loading#################')
     df2 = pd.read_excel('客户结果数据明细表-盛宝.xlsx')
+    # 把姓名后面的数字去掉，Series正则表达式表达方式
+    df2['服务人员'] = df2['服务人员'].str.extract('([\u4e00-\u9fa5]*)')
     # 删除不需要的列
     df2.drop(['当日佣转', '本月佣转', '当日收入', '当月收入', '累计佣金'], axis=1, inplace=True)
     # 删除空列
@@ -92,19 +102,23 @@ def deal_shengbao(who):
 
 def deal_xindan(who):
     print('正在处理新单操作明细，loading:#################')
-    df3 = pd.read_excel('新单操作明细.xlsx')
-    df3.dropna(axis=1, how='all', inplace=True)
-    df3.drop(['佣金收入'], axis=1, inplace=True)
-    deal_date(df3)
+    df = pd.read_excel('新单操作明细.xlsx')
+    # 把姓名后面的数字去掉，Series正则表达式表达方式
+    df['服务人员'] = df['服务人员'].str.extract('([\u4e00-\u9fa5]*)')
+    df.dropna(axis=1, how='all', inplace=True)
+    df.drop(['佣金收入'], axis=1, inplace=True)
+    deal_date(df)
     # 选择组别,筛选二部一组
-    df3 = df3[df3['服务组别'] == who]
-    df3.to_excel('new_新单.xlsx', index=None)
+    df = df[df['服务组别'] == who]
+    df.to_excel('new_新单.xlsx', index=None)
     print('新单处理完成 :) ')
-    return df3
+    return df
 
 def deal_qihuo(who):
     print('正在处理期货操作，loading:#################')
     df = pd.read_excel('期货持仓客户明细.xlsx')
+    # 把姓名后面的数字去掉，Series正则表达式表达方式
+    df['服务人员'] = df['服务人员'].str.extract('([\u4e00-\u9fa5]*)')
     df.dropna(axis=1, how='all', inplace=True)
     df.drop(['交易账号'], axis=1, inplace=True)
     deal_date(df)
@@ -114,13 +128,11 @@ def deal_qihuo(who):
     print('期货处理完成 :) ')
 
 
-def combin_three_files_in_one_excel(df1, df2, df3):
+def work_summary():
     """
-    按照姓名把sheet分成独立的sheet
+    总功能：清洗4个表格并合并
+    :return:
     """
-    names = list(df1['服务人员'].drop_duplicates())
-
-if __name__ == '__main__':
     path_dir = input('请输入处理文件夹地址： ')
     os.chdir(path_dir)
     zubie = input('请选择：\n二部一组： 1\n二部二组： 2 \n')
@@ -134,5 +146,27 @@ if __name__ == '__main__':
         deal_xindan(who)
     if os.path.exists('期货持仓客户明细.xlsx'):
         deal_qihuo(who)
+    #combin_files_in_one_file_sheets()
 
-    combin_files_in_one_file_sheets()
+if __name__ == '__main__':
+    print('#'*23)
+    print(('#' + ' ' * 5+'Go for it!' + ' '*6 + '#'))
+    print(('#' + ' ' * 6 + 'Brandon' + ' '*8 + '#'))
+    print(('#' + ' ' * 3+'Never give up!' + ' '*4 + '#'))
+    print('#' * 23)
+    func = input('请选择实现的功能：'+'\n'
+                 +'1: 清洗4个表格并合并\n'+
+                 '2: 把Excel按照姓名分成多个sheet\n')
+    if func == '1':
+        work_summary()
+    if func == '2':
+        files = os.listdir('.')
+        print(files)
+        for i, order in enumerate(files):
+            print(i+1, order)
+        file = input('选择想要处理的文件：')
+        divide_by_name_to_sheets(pd.read_excel(files[int(file)-1]), 'divied_by_names')
+        # print(files[int(file)-1])
+
+    print('Enjoy it!')
+    input()

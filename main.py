@@ -50,8 +50,8 @@ def combine_files_in_one_file_sheets():
 
         if 'py' in name or 'exe' in name or '客户' in name or '操作' in name:
             continue
-        name = name.split('.')[0]
-        print('现在准备合并： ', name)
+        #name = name.split('.')[0]
+        print('现在准备合并：', name)
         df = pd.read_excel(name)
         deal_date(df)
         df.to_excel(writer, sheet_name=name, index=False)
@@ -133,7 +133,7 @@ def work_summary():
     总功能：清洗4个表格并合并
     :return:
     """
-    
+
     zubie = input('请选择：\n二部一组： 1\n二部二组： 2 \n')
     who = '二部一组' if zubie == '1' else '二部二组'
     print(who)
@@ -145,7 +145,7 @@ def work_summary():
         deal_xindan(who)
     if os.path.exists('期货持仓客户明细.xlsx'):
         deal_qihuo(who)
-    # combin_files_in_one_file_sheets()
+    combine_files_in_one_file_sheets()
 
 
 if __name__ == '__main__':

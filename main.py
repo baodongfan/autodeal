@@ -133,8 +133,7 @@ def work_summary():
     总功能：清洗4个表格并合并
     :return:
     """
-    path_dir = input('请输入处理文件夹地址： ')
-    os.chdir(path_dir)
+    
     zubie = input('请选择：\n二部一组： 1\n二部二组： 2 \n')
     who = '二部一组' if zubie == '1' else '二部二组'
     print(who)
@@ -155,13 +154,15 @@ if __name__ == '__main__':
     print(('#' + ' ' * 6 + 'Brandon' + ' ' * 8 + '#'))
     print(('#' + ' ' * 3 + 'Never give up!' + ' ' * 4 + '#'))
     print('#' * 23)
+    path_dir = input('请输入处理文件夹地址： ')
+    os.chdir(path_dir)
     func = input('请选择实现的功能：' + '\n'
                  + '1: 清洗4个表格并合并\n' +
                  '2: 把Excel按照姓名分成多个sheet\n')
     if func == '1':
         work_summary()
     if func == '2':
-        files = os.listdir('.')
+        files = os.listdir(path_dir)
         print(files)
         for i, order in enumerate(files):
             print(i + 1, order)

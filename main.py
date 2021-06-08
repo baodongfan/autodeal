@@ -3,6 +3,21 @@ import pandas as pd
 import os
 
 
+def concat_sheets_to_sheet(file):
+    """
+    合并多个sheets到一个sheet里面
+    要求：抬头一样
+    """
+    df = pd.read_excel(file, None)
+    keys = list(df.keys())
+    # 数据合并
+    df_concat = pd.DataFrame()
+    for i in keys:
+        df1 = df[i]
+        df_concat = pd.concat([df_concat, df1])
+    df_concat.to_excel('concated.xlsx', index=False)
+
+
 def divide_by_name_to_sheets(df, file_name):
     """
     按照姓名把1个sheet分成独立的sheet
@@ -50,7 +65,7 @@ def combine_files_in_one_file_sheets():
 
         if 'py' in name or 'exe' in name or '客户' in name or '操作' in name:
             continue
-        #name = name.split('.')[0]
+        # name = name.split('.')[0]
         print('现在准备合并：', name)
         df = pd.read_excel(name)
         deal_date(df)
@@ -158,7 +173,8 @@ if __name__ == '__main__':
     os.chdir(path_dir)
     func = input('请选择实现的功能：' + '\n'
                  + '1: 清洗4个表格并合并\n' +
-                 '2: 把Excel按照姓名分成多个sheet\n')
+                 '2: 把Excel按照姓名分成多个sheet\n' +
+                 '3：把多个sheets合并到一个sheet里\n')
     if func == '1':
         work_summary()
     if func == '2':
@@ -169,6 +185,12 @@ if __name__ == '__main__':
         file = input('选择想要处理的文件：')
         divide_by_name_to_sheets(pd.read_excel(files[int(file) - 1]), 'divied_by_names')
         # print(files[int(file)-1])
+    if func == '3':
+        files = os.listdir(path_dir)
+        for i, order in enumerate(files):
+            print(i+1, order)
+        file = input('选择想要处理的文件：')
+        concat_sheets_to_sheet(files[int(file) - 1])
 
     print('Enjoy it!')
     input('按任意键退出 :) ')
